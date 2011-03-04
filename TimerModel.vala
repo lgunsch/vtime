@@ -1,6 +1,6 @@
 /*
  * vtime -- A simple GTK+ stopwatch/timer.
- * Copyright (C) 2011 Lewis Gunsch
+ * Copyright (C) 2011 Lewis Gunsch <lgunsch@gmail.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
