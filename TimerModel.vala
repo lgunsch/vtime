@@ -60,9 +60,9 @@ class TimerModel : GLib.Object {
 
 	~TimerModel() {
 		this.timer = null;
-		/* must check is destroyed first */
-		Source.(this.event_source_id);
-		/* TODO: should I return false in the event callback? */
+		/* TODO: ? must check is destroyed first ? */
+		Source.remove(this.event_source_id);
+		/* TODO: ? hould I return false in the event callback ? */
 	}
 
 	/**
