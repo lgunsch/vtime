@@ -75,19 +75,57 @@ class TimerModel : GLib.Object {
 		return true;
 	}
 
+	/**
+	 * Starts the timer, calling the time_change() signal every time the time is
+	 * updated.
+	 */
 	public void start() {
 		/* This should call our timer_timeout method approximately every 1000
 		 * milliseconds so our time can be updated.
 		 */
-		this.event_source_id = Timeout.add(TIMEOUT_INTERVAL, this.timer_timeout);
-
+		event_source_id = Timeout.add(TIMEOUT_INTERVAL, this.timer_timeout);
+		timer.start();
+		timer_state = TimerState.RUNNING;
 		stdout.printf("Timer started.\nEvent source ID is: %u.\n",
 					  this.event_source_id);
 	}
 
-	public void stop() {
+	/**
+	 * Stops the timer, resetting the current time back to zero. If you just wanted
+	 * to pause the timer and not reset the timer use pause instead.
+	 */
+	public void stop() throws TimerModelError {
+		if (! Source.remove(event_source_id)) {
+			throw new TimerModelError.EVENT_SOURCE_ERROR(
+				"Could not remove event source from MainLoop.");
+		}
+
+		/* Once the event source has been removed properly there should be no more
+		 * timer_timeout calls so we can zero the properties.
+		 */
+		lock (days) {
+			days = 0;
+		}
+		lock (hours) {
+			hours = 0;
+		}
+		lock (minutes) {
+			minutes = 0;
+		}
+		lock (seconds) {
+			seconds = 0;
+		}
+		lock (milliseconds) {
+			milliseconds = 0;
+		}
+
+		timer.stop();
+		timer.reset();
+
+		/* Call timer_timeout manually to update the time back to zero. */
+		timer_timeout();
+
 		stdout.printf("Timer stopped.\n");
-		Source.remove(this.event_source_id);
 	}
 
 	public void pause() {
@@ -98,7 +136,14 @@ class TimerModel : GLib.Object {
 	public static int main(string [] argv) {
 		var timer = new TimerModel();
 		timer.start();
+		timer.stop();
+		timer.start();
 		new MainLoop().run();
 		return 0;
 	}
 }
+
+public errordomain TimerModelError {
+	EVENT_SOURCE_ERROR
+}
+
