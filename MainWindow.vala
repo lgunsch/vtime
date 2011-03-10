@@ -27,6 +27,58 @@ class MainWindow : Window {
 		this.destroy.connect(Gtk.main_quit);
 
 		set_default_size(800, 600);
+
+		this.configureMenu();
+	}
+
+	public void configureMenu() {
+		
+		var menu_bar = new MenuBar();
+		
+		/* File menu */
+		var file_menu = new Menu();
+		var quit = new MenuItem.with_mnemonic("_Quit");
+		quit.activate.connect(main_quit);
+		file_menu.append(quit);
+		
+		var file_launcher = new MenuItem.with_mnemonic("_File");
+		file_launcher.set_submenu(file_menu);
+		menu_bar.append(file_launcher);
+		
+		/* Edit menu */
+		var edit_menu = new Menu();
+		var font = new MenuItem.with_label("Font");
+		edit_menu.append(font);
+
+		var edit_launcher = new MenuItem.with_mnemonic("_Edit");
+		edit_launcher.set_submenu(edit_menu);
+		menu_bar.append(edit_launcher);
+
+		/* Timer menu */
+		var timer_menu = new Menu();
+		var start = new MenuItem.with_mnemonic("_Start");
+		timer_menu.append(start);
+		var pause = new MenuItem.with_mnemonic("_Pause");
+		timer_menu.append(pause);
+		var stop = new MenuItem.with_mnemonic("S_top");
+		timer_menu.append(stop);
+
+		var timer_launcher = new MenuItem.with_mnemonic("_Timer");
+		timer_launcher.set_submenu(timer_menu);
+		menu_bar.append(timer_launcher);
+
+		/* Help menu */
+		var help_menu = new Menu();
+		var license = new MenuItem.with_mnemonic("_License");
+		help_menu.append(license);
+		var about = new MenuItem.with_mnemonic("_About");
+		help_menu.append(about);
+
+		var help_launcher = new MenuItem.with_mnemonic("_Help");
+		help_launcher.set_submenu(help_menu);
+		menu_bar.append(help_launcher);
+
+		this.add(menu_bar);
 	}
 }
 
