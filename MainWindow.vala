@@ -23,6 +23,10 @@ class MainWindow : Window {
 
 	protected MenuBar menu_bar;
 	protected Label time_label;
+	
+	public int x_win_size { get; set; default = 800; }
+	public int y_win_size { get; set; default = 600; }
+
 	protected const string default_font = "Courier";
 	protected const int default_size = 62;
 	protected const Pango.Weight default_weight = Pango.Weight.NORMAL;
@@ -32,7 +36,7 @@ class MainWindow : Window {
 		this.position = WindowPosition.CENTER;
 		this.destroy.connect(Gtk.main_quit);
 
-		set_default_size(800, 600);
+		set_default_size(x_win_size, y_win_size);
 
 		this.configure_menu();
 		this.configure_time_label();
@@ -48,6 +52,7 @@ class MainWindow : Window {
 
 		var attr_list = new Pango.AttrList();
 
+		/* Set the font for the time label */
 		var font = new Pango.FontDescription();
         font.set_family(default_font);
         font.set_size((int)(default_size * Pango.SCALE));
