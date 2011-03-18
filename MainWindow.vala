@@ -38,8 +38,8 @@ class MainWindow : Window {
 		this.configure_time_label();
 
 		var vbox = new VBox(false, 0);
-		vbox.add(menu_bar);
-		vbox.add(time_label);
+		vbox.pack_start(menu_bar, false, false, 0);
+		vbox.pack_end(time_label, true, true, 0);
 		this.add(vbox);
 	}
 
