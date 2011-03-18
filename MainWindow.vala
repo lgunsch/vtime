@@ -21,6 +21,12 @@ using Gtk;
 
 class MainWindow : Window {
 
+	protected MenuBar menu_bar;
+	protected Label time_label;
+	protected const string default_font = "Courier";
+	protected const int default_size = 62;
+	protected const Pango.Weight default_weight = Pango.Weight.NORMAL;
+
 	public MainWindow() {
 		this.title = "VTime";
 		this.position = WindowPosition.CENTER;
@@ -28,28 +34,50 @@ class MainWindow : Window {
 
 		set_default_size(800, 600);
 
-		this.configureMenu();
+		this.configure_menu();
+		this.configure_time_label();
+
+		var vbox = new VBox(false, 0);
+		vbox.add(menu_bar);
+		vbox.add(time_label);
+		this.add(vbox);
 	}
 
-	public void configureMenu() {
-		
-		var menu_bar = new MenuBar();
-		
+	protected void configure_time_label() {
+		time_label = new Label("00:00:00:00");
+
+		var attr_list = new Pango.AttrList();
+
+		var font = new Pango.FontDescription();
+        font.set_family(default_font);
+        font.set_size((int)(default_size * Pango.SCALE));
+		font.set_weight(default_weight);
+		attr_list.insert(new Pango.AttrFontDesc(font));
+
+		time_label.set_attributes(attr_list);
+	}
+
+	protected void configure_menu() {
+		menu_bar = new MenuBar();
+
 		/* File menu */
 		var file_menu = new Menu();
 		var quit = new MenuItem.with_mnemonic("_Quit");
 		quit.activate.connect(main_quit);
 		file_menu.append(quit);
-		
+
+		/* File menu launcher */
 		var file_launcher = new MenuItem.with_mnemonic("_File");
 		file_launcher.set_submenu(file_menu);
 		menu_bar.append(file_launcher);
-		
+
 		/* Edit menu */
 		var edit_menu = new Menu();
 		var font = new MenuItem.with_label("Font");
+		font.activate.connect(show_font_chooser);
 		edit_menu.append(font);
 
+		/* Edit menu launcher */
 		var edit_launcher = new MenuItem.with_mnemonic("_Edit");
 		edit_launcher.set_submenu(edit_menu);
 		menu_bar.append(edit_launcher);
@@ -63,6 +91,7 @@ class MainWindow : Window {
 		var stop = new MenuItem.with_mnemonic("S_top");
 		timer_menu.append(stop);
 
+		/* Timer menu launcher */
 		var timer_launcher = new MenuItem.with_mnemonic("_Timer");
 		timer_launcher.set_submenu(timer_menu);
 		menu_bar.append(timer_launcher);
@@ -70,15 +99,28 @@ class MainWindow : Window {
 		/* Help menu */
 		var help_menu = new Menu();
 		var license = new MenuItem.with_mnemonic("_License");
+		license.activate.connect(show_license);
 		help_menu.append(license);
 		var about = new MenuItem.with_mnemonic("_About");
+		about.activate.connect(show_about);
 		help_menu.append(about);
 
+		/* Help menu launcher */
 		var help_launcher = new MenuItem.with_mnemonic("_Help");
 		help_launcher.set_submenu(help_menu);
 		menu_bar.append(help_launcher);
+	}
 
-		this.add(menu_bar);
+	public void show_font_chooser() {
+		stdout.printf("Font chooser clicked!\n");
+	}
+
+	public void show_about() {
+		stdout.printf("About clicked!\n");
+	}
+
+	public void show_license() {
+		stdout.printf("License clicked!\n");
 	}
 }
 
