@@ -23,7 +23,7 @@ class MainWindow : Window {
 
 	protected MenuBar menu_bar;
 	protected Label time_label;
-	
+
 	public int x_win_size { get; set; default = 800; }
 	public int y_win_size { get; set; default = 600; }
 
@@ -103,9 +103,6 @@ class MainWindow : Window {
 
 		/* Help menu */
 		var help_menu = new Menu();
-		var license = new MenuItem.with_mnemonic("_License");
-		license.activate.connect(show_license);
-		help_menu.append(license);
 		var about = new MenuItem.with_mnemonic("_About");
 		about.activate.connect(show_about);
 		help_menu.append(about);
@@ -121,11 +118,9 @@ class MainWindow : Window {
 	}
 
 	public void show_about() {
-		stdout.printf("About clicked!\n");
-	}
-
-	public void show_license() {
-		stdout.printf("License clicked!\n");
+		var about = new About();
+		about.run();
+		about.hide();
 	}
 }
 
