@@ -114,7 +114,17 @@ class MainWindow : Window {
 	}
 
 	public void show_font_chooser() {
-		stdout.printf("Font chooser clicked!\n");
+		var font_chooser = new FontSelectionDialog("Edit Font");
+		font_chooser.set_preview_text("00:00:00:00");
+		var response = font_chooser.run();
+  		font_chooser.hide();
+		if (response == ResponseType.OK) {
+			var font = Pango.FontDescription.from_string(
+				font_chooser.get_font_name());
+			var attr_list = new Pango.AttrList();
+			attr_list.insert(new Pango.AttrFontDesc(font));
+			time_label.set_attributes(attr_list);
+		}
 	}
 
 	public void show_about() {
