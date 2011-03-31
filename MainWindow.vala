@@ -114,6 +114,7 @@ class MainWindow : Window {
 	}
 
 	public void show_font_chooser() {
+		/* TODO: Have the font currently in use highlighted */
 		var font_chooser = new FontSelectionDialog("Edit Font");
 		font_chooser.set_preview_text("00:00:00:00");
 		var response = font_chooser.run();
