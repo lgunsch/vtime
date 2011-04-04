@@ -5,7 +5,7 @@ bld.program(
 	packages      = 'gtk+-2.0',
 	target        = 'vtime',
 	uselib        = 'GTK GLIB',
-	source        = ['MainWindow.vala','About.vala'],
+	source        = ['MainWindow.vala','About.vala', 'TimerModel.vala'],
 	vala_defines  = ['DEBUG']
 	)
 

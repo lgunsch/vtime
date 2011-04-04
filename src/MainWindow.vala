@@ -21,6 +21,8 @@ using Gtk;
 
 class MainWindow : Window {
 
+	protected TimerModel timer;
+
 	protected MenuBar menu_bar;
 	protected Label time_label;
 
@@ -38,6 +40,8 @@ class MainWindow : Window {
 
 		set_default_size(x_win_size, y_win_size);
 
+		this.timer = new TimerModel();
+
 		this.configure_menu();
 		this.configure_time_label();
 
@@ -45,6 +49,8 @@ class MainWindow : Window {
 		vbox.pack_start(menu_bar, false, false, 0);
 		vbox.pack_end(time_label, true, true, 0);
 		this.add(vbox);
+
+		timer.time_change.connect(update_time);
 	}
 
 	protected void configure_time_label() {
@@ -90,10 +96,13 @@ class MainWindow : Window {
 		/* Timer menu */
 		var timer_menu = new Menu();
 		var start = new MenuItem.with_mnemonic("_Start");
+		start.activate.connect(timer.start);
 		timer_menu.append(start);
 		var pause = new MenuItem.with_mnemonic("_Pause");
+		pause.activate.connect(timer.pause);
 		timer_menu.append(pause);
 		var stop = new MenuItem.with_mnemonic("S_top");
+		stop.activate.connect(stop_action);
 		timer_menu.append(stop);
 
 		/* Timer menu launcher */
@@ -132,6 +141,29 @@ class MainWindow : Window {
 		var about = new About();
 		about.run();
 		about.hide();
+	}
+
+	public void update_time() {
+		ulong days = timer.days;
+		ulong hours = timer.hours;
+		ulong mins = timer.minutes;
+		ulong secs = timer.seconds;
+		ulong millis = timer.milliseconds;
+		string time = "%2.2lu:%2.2lu:%2.2lu:%2.2lu:%2.2lu".printf(days, hours, mins, secs, millis);
+		time_label.set_text(time);
+		stdout.printf("Time: %s.\n", time);
+		stdout.flush();
+		return;
+	}
+
+	public void stop_action() {
+		try {
+			timer.stop();
+		} catch (TimerModelError.EVENT_SOURCE_ERROR e) {
+			var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
+			alert_message.run();
+			main_quit();
+		}
 	}
 }
 
