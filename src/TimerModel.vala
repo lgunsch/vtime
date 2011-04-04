@@ -132,15 +132,6 @@ class TimerModel : GLib.Object {
 		stdout.printf("Timer paused.\n");
 
 	}
-
-	public static int main(string [] argv) {
-		var timer = new TimerModel();
-		timer.start();
-		timer.stop();
-		timer.start();
-		new MainLoop().run();
-		return 0;
-	}
 }
 
 public errordomain TimerModelError {
