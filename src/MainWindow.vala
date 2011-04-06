@@ -148,8 +148,7 @@ class MainWindow : Window {
 		ulong hours = timer.hours;
 		ulong mins = timer.minutes;
 		ulong secs = timer.seconds;
-		ulong millis = timer.milliseconds;
-		string time = "%2.2lu:%2.2lu:%2.2lu:%2.2lu:%2.2lu".printf(days, hours, mins, secs, millis);
+		string time = "%2.2lu:%2.2lu:%2.2lu:%2.2lu".printf(days, hours, mins, secs);
 		time_label.set_text(time);
 		stdout.printf("Time: %s.\n", time);
 		stdout.flush();

@@ -48,8 +48,6 @@ class TimerModel : GLib.Object {
 
 	public ulong seconds { get; protected set; default = 0; }
 
-	public ulong milliseconds { get; protected set; default = 0; }
-
 	public TimerState timer_state { get; protected set; default =
 															TimerState.STOPPED; }
 
@@ -71,7 +69,20 @@ class TimerModel : GLib.Object {
 	 * only be called again by the timeout if true is returned.
 	 */
 	protected bool timer_timeout() {
-		stdout.printf("Timer timedout!\n");
+		double secs = timer.elapsed();
+		ulong current = (ulong)secs*1000;
+
+		this.days = current / (24*60*60*1000);
+		current -= this.days*(24*60*60*1000);
+		this.hours = current / (60*60*1000);
+		current -= this.hours*(60*60*1000);
+		this.minutes = current / (60*1000);
+		current -= this.minutes*(60*1000);
+		this.seconds = current / 1000;
+		current -= this.seconds*1000;
+
+		this.time_change();
+
 		return true;
 	}
 
@@ -114,9 +125,6 @@ class TimerModel : GLib.Object {
 		}
 		lock (seconds) {
 			seconds = 0;
-		}
-		lock (milliseconds) {
-			milliseconds = 0;
 		}
 
 		timer.stop();
