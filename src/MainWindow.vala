@@ -24,6 +24,9 @@ class MainWindow : Window {
 	protected TimerModel timer;
 
 	protected MenuBar menu_bar;
+	protected unowned MenuItem start;
+	protected unowned MenuItem pause;
+	protected unowned MenuItem stop;
 	protected Label time_label;
 
 	public int x_win_size { get; set; default = 800; }
@@ -96,12 +99,17 @@ class MainWindow : Window {
 		/* Timer menu */
 		var timer_menu = new Menu();
 		var start = new MenuItem.with_mnemonic("_Start");
+		this.start = start;
 		start.activate.connect(start_action);
 		timer_menu.append(start);
 		var pause = new MenuItem.with_mnemonic("_Pause");
+		this.pause = pause;
+		pause.set_sensitive(false);
 		pause.activate.connect(pause_action);
 		timer_menu.append(pause);
 		var stop = new MenuItem.with_mnemonic("S_top");
+		this.stop = stop;
+		stop.set_sensitive(false);
 		stop.activate.connect(stop_action);
 		timer_menu.append(stop);
 
@@ -158,9 +166,11 @@ class MainWindow : Window {
 	public void start_action() {
 		try {
 			timer.start();
+			start.set_sensitive(false);
+			pause.set_sensitive(true);
+			stop.set_sensitive(true);
 		} catch (TimerModelError.ACTION_STATE_ERROR e) {
 			/* we will ignore this error */
-			stdout.printf("Ignoring start error.\n");
 			return;
 		} catch (TimerModelError e) {
 				var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
@@ -172,9 +182,11 @@ class MainWindow : Window {
 	public void pause_action() {
 		try {
 			timer.pause();
+			start.set_sensitive(true);
+			pause.set_sensitive(false);
+			stop.set_sensitive(true);
 		} catch (TimerModelError.ACTION_STATE_ERROR e) {
 			/* we will ignore this error */
-			stdout.printf("Ignoring pause error.\n");
 			return;
 		} catch (TimerModelError e) {
 			var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
@@ -186,9 +198,11 @@ class MainWindow : Window {
 	public void stop_action() {
 		try {
 			timer.stop();
+			start.set_sensitive(true);
+			pause.set_sensitive(false);
+			stop.set_sensitive(false);
 		} catch (TimerModelError.ACTION_STATE_ERROR e) {
 			/* we will ignore this error */
-			stdout.printf("Ignoring stop error.\n");
 			return;
 		} catch (TimerModelError e) {
 			var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
