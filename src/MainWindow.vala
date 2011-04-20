@@ -96,10 +96,10 @@ class MainWindow : Window {
 		/* Timer menu */
 		var timer_menu = new Menu();
 		var start = new MenuItem.with_mnemonic("_Start");
-		start.activate.connect(timer.start);
+		start.activate.connect(start_action);
 		timer_menu.append(start);
 		var pause = new MenuItem.with_mnemonic("_Pause");
-		pause.activate.connect(timer.pause);
+		pause.activate.connect(pause_action);
 		timer_menu.append(pause);
 		var stop = new MenuItem.with_mnemonic("S_top");
 		stop.activate.connect(stop_action);
@@ -155,9 +155,33 @@ class MainWindow : Window {
 		return;
 	}
 
+	public void start_action() {
+		try {
+			timer.start();
+		} catch (TimerModelError.ACTION_STATE_ERROR e) {
+			/* we will ignore this error */
+			stdout.printf("Ignoring start error.\n");
+			return;
+		}
+	}
+
+	public void pause_action() {
+		try {
+			timer.pause();
+		} catch (TimerModelError.ACTION_STATE_ERROR e) {
+			/* we will ignore this error */
+			stdout.printf("Ignoring pause error.\n");
+			return;
+		}
+	}
+
 	public void stop_action() {
 		try {
 			timer.stop();
+		} catch (TimerModelError.ACTION_STATE_ERROR e) {
+			/* we will ignore this error */
+			stdout.printf("Ignoring stop error.\n");
+			return;
 		} catch (TimerModelError.EVENT_SOURCE_ERROR e) {
 			var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
 			alert_message.run();

@@ -90,7 +90,11 @@ class TimerModel : GLib.Object {
 	 * Starts the timer, calling the time_change() signal every time the time is
 	 * updated.
 	 */
-	public void start() {
+	public void start() throws TimerModelError {
+		if (this.timer_state == TimerState.RUNNING) {
+			throw new TimerModelError.ACTION_STATE_ERROR("Timer must be paused or stopped before started.");
+		}
+
 		/* This should call our timer_timeout method approximately every 1000
 		 * milliseconds so our time can be updated.
 		 */
@@ -106,6 +110,9 @@ class TimerModel : GLib.Object {
 	 * to pause the timer and not reset the timer use pause instead.
 	 */
 	public void stop() throws TimerModelError {
+		if (this.timer_state == TimerState.STOPPED) {
+			throw new TimerModelError.ACTION_STATE_ERROR("Timer must be paused or running before stopped.");
+		}
 		if (! Source.remove(event_source_id)) {
 			throw new TimerModelError.EVENT_SOURCE_ERROR(
 				"Could not remove event source from MainLoop.");
@@ -132,17 +139,21 @@ class TimerModel : GLib.Object {
 
 		/* Call timer_timeout manually to update the time back to zero. */
 		timer_timeout();
-
 		stdout.printf("Timer stopped.\n");
+		this.timer_state = TimerState.STOPPED;
 	}
 
-	public void pause() {
+	public void pause() throws TimerModelError {
+		if (this.timer_state == TimerState.PAUSED || this.timer_state == TimerState.STOPPED) {
+			throw new TimerModelError.ACTION_STATE_ERROR("Timer must be running before paused.");
+		}
 		stdout.printf("Timer paused.\n");
-
+		this.timer_state = TimerState.PAUSED;
 	}
 }
 
 public errordomain TimerModelError {
-	EVENT_SOURCE_ERROR
+	EVENT_SOURCE_ERROR,
+	ACTION_STATE_ERROR
 }
 
