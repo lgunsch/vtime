@@ -162,6 +162,10 @@ class MainWindow : Window {
 			/* we will ignore this error */
 			stdout.printf("Ignoring start error.\n");
 			return;
+		} catch (TimerModelError e) {
+				var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
+			alert_message.run();
+			main_quit();
 		}
 	}
 
@@ -172,6 +176,10 @@ class MainWindow : Window {
 			/* we will ignore this error */
 			stdout.printf("Ignoring pause error.\n");
 			return;
+		} catch (TimerModelError e) {
+			var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
+			alert_message.run();
+			main_quit();
 		}
 	}
 
@@ -182,7 +190,7 @@ class MainWindow : Window {
 			/* we will ignore this error */
 			stdout.printf("Ignoring stop error.\n");
 			return;
-		} catch (TimerModelError.EVENT_SOURCE_ERROR e) {
+		} catch (TimerModelError e) {
 			var alert_message = new MessageDialog(this, DialogFlags.MODAL, MessageType.ERROR, ButtonsType.CLOSE, e.message);
 			alert_message.run();
 			main_quit();
